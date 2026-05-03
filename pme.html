@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynasoc® | Transition Numerique Souveraine</title>
+    <meta name="description" content="Dynasoc accompagne les ASBL, ONG et PME bruxelloises vers un numerique libre, souverain et conforme RGPD.">
+    <link rel="icon" type="image/jpeg" href="images/favicon.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #06B6D4;
+            --primary-dark: #0891B2;
+            --secondary: #0066FF;
+            --accent: #0A0A0A;
+            --bg-light: #F0FAFB;
+            --bg-gray: #F5F5F5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            background: #fff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: inherit;
+            font-family: inherit;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 80%; }
+
+        .nav-link:hover,
+        .nav-link.active { color: var(--primary); }
+
+        /* Hero Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(6,182,212,0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e5e5;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--bg-light) 0%, white 100%);
+        }
+
+        /* Accordion */
+        .accordion-item {
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+            border: none;
+            text-align: left;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover { background: var(--bg-light); }
+
+        .accordion-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-icon svg { transition: transform 0.3s ease; }
+
+        .accordion-item.active .accordion-icon { background: var(--primary); color: white; }
+        .accordion-item.active .accordion-icon svg { transform: rotate(180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion-item.active .accordion-content { max-height: 600px; }
+
+        .accordion-body {
+            padding: 0 2rem 1.5rem;
+            color: #525252;
+            line-height: 1.75;
+        }
+
+        /* Stats */
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Section Backgrounds */
+        .section-alt { background: var(--bg-light); }
+        .section-gray { background: var(--bg-gray); }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 999;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pattern */
+        .pattern-dots {
+            background-image: radial-gradient(circle, rgba(6,182,212,0.08) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Focus States */
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e5e5e5;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(6,182,212,0.15);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .img-hover { overflow: hidden; border-radius: 1rem; }
+        .img-hover img { transition: transform 0.5s ease; }
+        .img-hover:hover img { transform: scale(1.05); }
+    </style>
+
+        <!-- Google Translate Script -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'fr', autoDisplay: false}, 'google_translate_element');
+        }
+        function changeLang(langCode) {
+            var selectField = document.querySelector(".goog-te-combo");
+            if (!selectField) {
+                // If it isn't loaded yet
+                setTimeout(function() { changeLang(langCode); }, 500);
+                return;
+            }
+            selectField.value = langCode;
+            selectField.dispatchEvent(new Event('change'));
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        .goog-te-banner-frame { display: none !important; }
+        iframe.goog-te-banner-frame { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        body { top: 0px !important; position: static !important; }
+        html { top: 0px !important; position: static !important; }
+        /* Cacher la translation div */
+        #google_translate_element { display: none !important; }
+        .goog-tooltip { border: none !important; display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-[72px]">
+                <button onclick="window.location.href='index.html'" class="flex items-center gap-3 logo-svg cursor-pointer bg-transparent border-none p-0" aria-label="Dynasoc Accueil">
+                    <img src="images/logo.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain; margin: -50px 0;">
+                </button>
+
+                <nav class="hidden lg:flex items-center gap-1" role="navigation" aria-label="Navigation principale">
+                    <button onclick="window.location.href='index.html'" class="nav-link" data-page="home">Accueil</button>
+                    <button onclick="window.location.href='mission.html'" class="nav-link" data-page="mission">Notre Mission</button>
+                    <button onclick="window.location.href='actions.html'" class="nav-link" data-page="actions">Nos Actions</button>
+                    <button onclick="window.location.href='ressources.html'" class="nav-link" data-page="ressources">Ressources</button>
+                    <button onclick="window.location.href='communaute.html'" class="nav-link" data-page="communaute">Communaute</button>
+                    <button onclick="window.location.href='pme.html'" class="nav-link" class="nav-link active" data-page="pme">PME</button>
+                    <button onclick="window.location.href='contact.html'" class="nav-link" data-page="contact">Contact</button>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 bg-gray-100 rounded-full p-1">
+                        <button onclick="changeLang('fr')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium bg-white shadow-sm cursor-pointer border-none pb-0">FR</button>
+                        <button onclick="changeLang('nl')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">NL</button>
+                        <button onclick="changeLang('en')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">EN</button>
+                    </div>
+                    
+                    <button class="lg:hidden p-2 bg-transparent border-none" id="mobile-toggle" aria-label="Ouvrir le menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu" id="mobile-menu" role="dialog">
+            <nav class="flex flex-col gap-4">
+                <button onclick="window.location.href='index.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Accueil</button>
+                <button onclick="window.location.href='mission.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Notre Mission</button>
+                <button onclick="window.location.href='actions.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Nos Actions</button>
+                <button onclick="window.location.href='ressources.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Ressources</button>
+                <button onclick="window.location.href='communaute.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Communaute</button>
+                <button onclick="window.location.href='pme.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">PME</button>
+                <button onclick="window.location.href='contact.html'; closeMobileMenu();" class="py-3 text-lg font-semibold text-left bg-transparent border-none cursor-pointer">Contact</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== PAGE HOME ==================== -->
+    <main style="display: block; opacity: 1; transform: translateY(0);" id="page-pme" class="page-section pt-[72px]">
+        <section class="py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 fade-up">
+                    <span class="inline-block bg-orange-500/20 text-orange-300 px-4 py-1 rounded-full text-sm font-medium mb-4">Pour les PME</span>
+                    <h1 class="text-4xl sm:text-5xl font-bold mb-4">Digitalisez votre PME sans exploser votre budget</h1>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Solutions open source fiables, conformes RGPD et jusqu'a 75 % moins cheres</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 fade-up stagger-1">
+                    <button onclick="document.getElementById('defis').scrollIntoView({behavior:'smooth'})" class="bg-white text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all inline-flex items-center gap-2 border-none cursor-pointer font-inherit">
+                        Vos defis
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                    </button>
+                    <button onclick="window.location.href='contact.html'" class="border-2 border-white text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-gray-900 transition-all inline-flex items-center gap-2 bg-transparent cursor-pointer font-inherit">
+                        Audit gratuit
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 section-gray" id="defis">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center fade-up">Vos defis, nos solutions</h2>
+                <img src="images/Three_monitors_on_202604221207.jpeg" alt="Espace de travail PME" class="w-full h-64 object-cover rounded-2xl shadow-xl mb-12">
+
+                <div class="space-y-4 fade-up stagger-2">
+                    <div class="accordion-item" data-accordion>
+                        <button class="accordion-header" aria-expanded="false">
+                            <span>Couts d'abonnement qui explosent chaque annee</span>
+                            <span class="accordion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <!-- Ce que le client paie aujourd'hui -->
+                                <p class="font-semibold text-gray-700 mb-3">Ce que vous payez aujourd'hui (exemple : 10 utilisateurs) :</p>
+                                <div class="overflow-x-auto mb-4">
+                                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                                        <thead>
+                                            <tr style="background:#f3f4f6;">
+                                                <th style="padding:8px 12px; text-align:left; border-bottom:2px solid #e5e7eb;">Poste</th>
+                                                <th style="padding:8px 12px; text-align:right; border-bottom:2px solid #e5e7eb;">Cout/an</th>
+                                                <th style="padding:8px 12px; text-align:right; border-bottom:2px solid #e5e7eb;">Sur 5 ans</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:8px 12px; border-bottom:1px solid #f3f4f6;">Microsoft 365 Business (x10)</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f3f4f6; color:#dc2626;">1 500 EUR</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f3f4f6; color:#dc2626;">~8 600 EUR*</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style="background:#fef2f2;">
+                                                <td style="padding:8px 12px; font-weight:700; font-size:0.85rem; color:#991b1b;" colspan="3">* En comptant une hausse tarifaire moyenne de 7 %/an (tendance observee chez les grands editeurs)</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                                <!-- Ce que ca donne avec nous -->
+                                <p class="font-semibold text-green-800 mb-3">Ce que ca donne avec notre accompagnement :</p>
+                                <div class="overflow-x-auto mb-3">
+                                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                                        <thead>
+                                            <tr style="background:#f0fdf4;">
+                                                <th style="padding:8px 12px; text-align:left; border-bottom:2px solid #bbf7d0;">Poste</th>
+                                                <th style="padding:8px 12px; text-align:right; border-bottom:2px solid #bbf7d0;">Cout/an</th>
+                                                <th style="padding:8px 12px; text-align:right; border-bottom:2px solid #bbf7d0;">Sur 5 ans</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:8px 12px; border-bottom:1px solid #f0fdf4;">Hebergement Nextcloud en Belgique</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">~300 EUR</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">~1 500 EUR</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:8px 12px; border-bottom:1px solid #f0fdf4;">Suite bureautique integree (open source)</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">inclus</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">inclus</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:8px 12px; border-bottom:1px solid #f0fdf4;">Migration et deploiement par Dynasoc</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">une seule fois</td>
+                                                <td style="padding:8px 12px; text-align:right; border-bottom:1px solid #f0fdf4; color:#166534;">selon audit</td>
+                                            </tr>
+                                            <tr style="background:#f0fdf4;">
+                                                <td style="padding:8px 12px; font-weight:700;">Total estime</td>
+                                                <td style="padding:8px 12px; text-align:right; font-weight:700; color:#166534;">~300 EUR</td>
+                                                <td style="padding:8px 12px; text-align:right; font-weight:700; color:#166534;">~2 000 EUR</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="background:linear-gradient(135deg,#dcfce7,#f0fdf4); border-radius:0.75rem; padding:1rem 1.25rem; border-left:4px solid #16a34a;">
+                                    <p class="font-bold text-green-800 text-lg">Economie estimee sur 5 ans : ~6 600 EUR — soit environ 75 % de moins</p>
+                                    <p class="text-green-700 text-sm mt-1">Sans aucune augmentation tarifaire annuelle. Vos donnees restent en Belgique, sous votre controle.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-accordion>
+                        <button class="accordion-header" aria-expanded="false">
+                            <span>Dependance a un fournisseur (vendor lock-in)</span>
+                            <span class="accordion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Exemple concret :</strong> Vos donnees sont dans Google Workspace. Vous voulez migrer ? Formats proprietaires (Google Docs != Word), integrations cassees, donnees difficiles a exporter proprement.</p>
+                                <div class="mt-4 p-4 bg-cyan-50 rounded-xl">
+                                    <p class="font-semibold text-cyan-800 mb-2">Avec l'open source :</p>
+                                    <p class="text-cyan-700">Nextcloud + OnlyOffice = formats standards (DOCX, XLSX, PDF). Vous pouvez changer d'hebergeur en 2 heures sans rien casser. Liberte totale.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-accordion>
+                        <button class="accordion-header" aria-expanded="false">
+                            <span>Conformite RGPD complexe et couteuse</span>
+                            <span class="accordion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Exemple concret :</strong> Vos donnees sont hebergees aux USA (Azure, Google Cloud). Le RGPD exige un contrat de transfert. Si audit : vous devez prouver ou sont vos donnees, qui y a acces.</p>
+                                <div class="mt-4 p-4 bg-red-50 rounded-xl border-2 border-red-200">
+                                    <p class="font-semibold text-red-800 mb-2">Risque :</p>
+                                    <p class="text-red-700">Contrats flous, serveurs inconnus. Risque d'amende : jusqu'a 20 millions EUR ou 4 % du CA mondial.</p>
+                                    <p class="font-semibold text-green-800 mt-3 mb-1">Solution :</p>
+                                    <p class="text-green-700">Nextcloud heberge en Belgique. Donnees 100 % sous votre controle. Conformite RGPD native.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-accordion>
+                        <button class="accordion-header" aria-expanded="false">
+                            <span>Besoin de productivite sans budget illimite</span>
+                            <span class="accordion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><strong>Exemple concret :</strong> Vous perdez 2 heures/semaine sur des taches manuelles (copier-coller, chercher des fichiers, emails repetitifs).</p>
+                                <div class="mt-4 p-4 bg-purple-50 rounded-xl">
+                                    <p class="font-semibold text-purple-800 mb-2">Notre service d'automatisation :</p>
+                                    <p class="text-purple-700">Nous mettons en place des automatisations sur mesure pour votre structure : gestion de factures, emails recurrents, synchronisation de donnees. Vous n'avez rien a configurer — nous nous en chargeons pour vous.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-12 text-center fade-up">Notre accompagnement PME en 4 etapes</h2>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="relative fade-up stagger-1 pl-12">
+                        <div class="absolute left-0 top-0 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
+                        <h3 class="font-bold text-lg mb-2">Audit gratuit</h3>
+                        <p class="text-gray-600 text-sm">Nous analysons votre ecosysteme actuel, identifions les dependances et estimons les economies potentielles.</p>
+                    </div>
+                    <div class="relative fade-up stagger-2 pl-12">
+                        <div class="absolute left-0 top-0 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">2</div>
+                        <h3 class="font-bold text-lg mb-2">Plan de migration</h3>
+                        <p class="text-gray-600 text-sm">Nous elaborons un plan detaille, etape par etape, adapte a vos contraintes et a votre calendrier.</p>
+                    </div>
+                    <div class="relative fade-up stagger-3 pl-12">
+                        <div class="absolute left-0 top-0 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">3</div>
+                        <h3 class="font-bold text-lg mb-2">Migration assistee</h3>
+                        <p class="text-gray-600 text-sm">Nous vous accompagnons dans la migration, formons vos equipes et assurons la continuite de service.</p>
+                    </div>
+                    <div class="relative fade-up stagger-4 pl-12">
+                        <div class="absolute left-0 top-0 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">4</div>
+                        <h3 class="font-bold text-lg mb-2">Autonomie totale</h3>
+                        <p class="text-gray-600 text-sm">Vous etes autonome. Nous restons disponibles pour le support et les questions futures.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 section-alt">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-up">
+                <h2 class="text-3xl font-bold mb-6">Pret a economiser jusqu'a 75% ?</h2>
+                <p class="text-xl text-gray-600 mb-8">Demandez votre audit gratuit et sans engagement.</p>
+                <button onclick="window.location.href='contact.html'" class="btn-primary">Demander un audit gratuit<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (visible on all pages) -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <button onclick="window.location.href='index.html'" class="flex items-center gap-3 mb-6 bg-transparent border-none p-0 cursor-pointer">
+                        <img src="images/Logo_blanc-Photoroom.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain;">
+                    </button>
+                    <p class="text-gray-400 mb-6">ASBL bruxelloise de plaidoyer pour la souverainete numerique.</p>
+                    <a href="mailto:contact@dynasoc.info" class="text-cyan-400 hover:underline">contact@dynasoc.info</a>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-3">
+                        <li><button onclick="window.location.href='index.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Accueil</button></li>
+                        <li><button onclick="window.location.href='mission.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Mission</button></li>
+                        <li><button onclick="window.location.href='actions.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Actions</button></li>
+                        <li><button onclick="window.location.href='ressources.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Ressources</button></li>
+                        <li><button onclick="window.location.href='communaute.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Communaute</button></li>
+                        <li><button onclick="window.location.href='pme.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">PME</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Confidentialite</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Statuts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Nous soutenir</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4 text-sm">Recevez nos actualites et invitations.</p>
+                    <form onsubmit="event.preventDefault(); this.reset(); alert('Inscription confirmée !');" class="flex gap-2">
+                        <input type="email" placeholder="Votre email" class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm">
+                        <button type="submit" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors border-none cursor-pointer text-white" aria-label="S'inscrire">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">&copy; 2025 Dynasoc<span class="text-xs align-top">®</span> ASBL. Tous droits reserves.</p>
+                <p class="text-gray-500 text-sm">Fait avec passion a Bruxelles</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize variables first
+        const header = document.getElementById('header');
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const canvas = document.getElementById('hero-canvas');
+        
+        let ctx = null;
+        let nodes = [];
+        let animationId = null;
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Page navigation system
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show target page
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Trigger animations on new page
+            setTimeout(() => {
+                targetPage.querySelectorAll('.fade-up').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+
+            // Restart canvas if on home page
+            if (pageId === 'home' && canvas) {
+                initCanvas();
+            } else if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function closeMobileMenu() {
+            if (mobileMenu) mobileMenu.classList.remove('open');
+            if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        // Mobile menu toggle
+        if (mobileToggle && mobileMenu) {
+            mobileToggle.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.toggle('open');
+                mobileToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Accordion functionality
+        document.querySelectorAll('[data-accordion]').forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    document.querySelectorAll('[data-accordion].active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                        activeItem.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                    });
+                    if (!isActive) {
+                        item.classList.add('active');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target) || 0;
+            const duration = 2000;
+            const start = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.round(target * easeOut);
+                if (progress < 1) requestAnimationFrame(update);
+                else element.textContent = target;
+            }
+            requestAnimationFrame(update);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number[data-target]').forEach(el => statsObserver.observe(el));
+
+        // Canvas animation
+        function initCanvas() {
+            if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            function resize() {
+                canvas.width = canvas.offsetWidth || 800;
+                canvas.height = canvas.offsetHeight || 600;
+                initNodes();
+            }
+
+            function initNodes() {
+                nodes = [];
+                const count = Math.min(Math.floor(((canvas.width || 800) * (canvas.height || 600)) / 25000), 60);
+                for (let i = 0; i < count; i++) {
+                    nodes.push({
+                        x: Math.random() * (canvas.width || 800),
+                        y: Math.random() * (canvas.height || 600),
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.max(2, Math.random() * 3 + 2),
+                        color: Math.random() > 0.5 ? '#06B6D4' : '#0066FF'
+                    });
+                }
+            }
+
+            function drawNode(node) {
+                if (!ctx) return;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, Math.max(1, node.radius), 0, Math.PI * 2);
+                ctx.fillStyle = node.color;
+                ctx.fill();
+            }
+
+            function drawConnections() {
+                if (!ctx) return;
+                const maxDist = 150;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dx = nodes[i].x - nodes[j].x;
+                        const dy = nodes[i].y - nodes[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDist) {
+                            const alpha = Math.max(0.02, (1 - dist / maxDist) * 0.3);
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function updateNodes() {
+                nodes.forEach(node => {
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 200 && dist > 0) {
+                        const force = (200 - dist) / 200 * 0.02;
+                        node.vx += (dx / dist) * force;
+                        node.vy += (dy / dist) * force;
+                    }
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    node.vx *= 0.99;
+                    node.vy *= 0.99;
+                    const w = canvas.width || 800;
+                    const h = canvas.height || 600;
+                    if (node.x < 0 || node.x > w) node.vx *= -1;
+                    if (node.y < 0 || node.y > h) node.vy *= -1;
+                    node.x = Math.max(0, Math.min(w, node.x));
+                    node.y = Math.max(0, Math.min(h, node.y));
+                });
+            }
+
+            function animate() {
+                if (!ctx || !canvas) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawConnections();
+                nodes.forEach(drawNode);
+                updateNodes();
+                animationId = requestAnimationFrame(animate);
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show initial animations
+            document.querySelectorAll('#page-home .fade-up').forEach(el => {
+                setTimeout(() => el.classList.add('visible'), 100);
+            });
+            initCanvas();
+        });
+
+        // Cleanup
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && animationId) cancelAnimationFrame(animationId);
+            else if (!document.hidden && document.getElementById('page-home')?.classList.contains('active')) initCanvas();
+        });
+    </script>
+</body>
+</html>

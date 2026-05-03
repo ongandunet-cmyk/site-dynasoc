@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynasoc® | Transition Numerique Souveraine</title>
+    <meta name="description" content="Dynasoc accompagne les ASBL, ONG et PME bruxelloises vers un numerique libre, souverain et conforme RGPD.">
+    <link rel="icon" type="image/jpeg" href="images/favicon.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #06B6D4;
+            --primary-dark: #0891B2;
+            --secondary: #0066FF;
+            --accent: #0A0A0A;
+            --bg-light: #F0FAFB;
+            --bg-gray: #F5F5F5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            background: #fff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: inherit;
+            font-family: inherit;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 80%; }
+
+        .nav-link:hover,
+        .nav-link.active { color: var(--primary); }
+
+        /* Hero Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(6,182,212,0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e5e5;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--bg-light) 0%, white 100%);
+        }
+
+        /* Accordion */
+        .accordion-item {
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+            border: none;
+            text-align: left;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover { background: var(--bg-light); }
+
+        .accordion-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-icon svg { transition: transform 0.3s ease; }
+
+        .accordion-item.active .accordion-icon { background: var(--primary); color: white; }
+        .accordion-item.active .accordion-icon svg { transform: rotate(180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion-item.active .accordion-content { max-height: 600px; }
+
+        .accordion-body {
+            padding: 0 2rem 1.5rem;
+            color: #525252;
+            line-height: 1.75;
+        }
+
+        /* Stats */
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Section Backgrounds */
+        .section-alt { background: var(--bg-light); }
+        .section-gray { background: var(--bg-gray); }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 999;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pattern */
+        .pattern-dots {
+            background-image: radial-gradient(circle, rgba(6,182,212,0.08) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Focus States */
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e5e5e5;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(6,182,212,0.15);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .img-hover { overflow: hidden; border-radius: 1rem; }
+        .img-hover img { transition: transform 0.5s ease; }
+        .img-hover:hover img { transform: scale(1.05); }
+    </style>
+
+        <!-- Google Translate Script -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'fr', autoDisplay: false}, 'google_translate_element');
+        }
+        function changeLang(langCode) {
+            var selectField = document.querySelector(".goog-te-combo");
+            if (!selectField) {
+                // If it isn't loaded yet
+                setTimeout(function() { changeLang(langCode); }, 500);
+                return;
+            }
+            selectField.value = langCode;
+            selectField.dispatchEvent(new Event('change'));
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        .goog-te-banner-frame { display: none !important; }
+        iframe.goog-te-banner-frame { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        body { top: 0px !important; position: static !important; }
+        html { top: 0px !important; position: static !important; }
+        /* Cacher la translation div */
+        #google_translate_element { display: none !important; }
+        .goog-tooltip { border: none !important; display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-[72px]">
+                <button onclick="window.location.href='index.html'" class="flex items-center gap-3 logo-svg cursor-pointer bg-transparent border-none p-0" aria-label="Dynasoc Accueil">
+                    <img src="images/logo.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain; margin: -50px 0;">
+                </button>
+
+                <nav class="hidden lg:flex items-center gap-1" role="navigation" aria-label="Navigation principale">
+                    <button onclick="window.location.href='index.html'" class="nav-link" data-page="home">Accueil</button>
+                    <button onclick="window.location.href='mission.html'" class="nav-link" data-page="mission">Notre Mission</button>
+                    <button onclick="window.location.href='actions.html'" class="nav-link" class="nav-link active" data-page="actions">Nos Actions</button>
+                    <button onclick="window.location.href='ressources.html'" class="nav-link" data-page="ressources">Ressources</button>
+                    <button onclick="window.location.href='communaute.html'" class="nav-link" data-page="communaute">Communaute</button>
+                    <button onclick="window.location.href='pme.html'" class="nav-link" data-page="pme">PME</button>
+                    <button onclick="window.location.href='contact.html'" class="nav-link" data-page="contact">Contact</button>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 bg-gray-100 rounded-full p-1">
+                        <button onclick="changeLang('fr')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium bg-white shadow-sm cursor-pointer border-none pb-0">FR</button>
+                        <button onclick="changeLang('nl')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">NL</button>
+                        <button onclick="changeLang('en')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">EN</button>
+                    </div>
+                    
+                    <button class="lg:hidden p-2 bg-transparent border-none" id="mobile-toggle" aria-label="Ouvrir le menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu" id="mobile-menu" role="dialog">
+            <nav class="flex flex-col gap-4">
+                <button onclick="window.location.href='index.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Accueil</button>
+                <button onclick="window.location.href='mission.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Notre Mission</button>
+                <button onclick="window.location.href='actions.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Nos Actions</button>
+                <button onclick="window.location.href='ressources.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Ressources</button>
+                <button onclick="window.location.href='communaute.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Communaute</button>
+                <button onclick="window.location.href='pme.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">PME</button>
+                <button onclick="window.location.href='contact.html'; closeMobileMenu();" class="py-3 text-lg font-semibold text-left bg-transparent border-none cursor-pointer">Contact</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== PAGE HOME ==================== -->
+    <main style="display: block; opacity: 1; transform: translateY(0);" id="page-actions" class="page-section pt-[72px]">
+        <section class="py-16 section-gray">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 fade-up">
+                    <span class="inline-block bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-medium mb-4">Nos Actions</span>
+                    <h1 class="text-4xl sm:text-5xl font-bold mb-4">Plaidoyer, Formation, Accompagnement</h1>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Trois leviers complementaires pour transformer votre organisation numerique.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <img src="images/Hands_collaborating_on_202604211858.jpeg" alt="Collaboration et planification strategique" class="w-full h-72 object-cover rounded-3xl shadow-xl mb-12">
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <article class="card fade-up stagger-1">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #FEF3C7 0%, white 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Plaidoyer politique</h3>
+                        <p class="text-gray-600 mb-6">Nous influencons les politiques publiques en faveur du logiciel libre et de la souverainete numerique.</p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Rendez-vous avec elus</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Rapports et positions publies</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Participation aux consultations</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Coalitions europeennes</li>
+                        </ul>
+                    </article>
+
+                    <article class="card fade-up stagger-2">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #DBEAFE 0%, white 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Formation pratique</h3>
+                        <p class="text-gray-600 mb-6">Des ateliers hands-on pour maitriser les outils libres du quotidien numerique.</p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Ateliers Nextcloud</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Initiation a l'open source</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Sensibilisation RGPD</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Webinaires mensuels gratuits</li>
+                        </ul>
+                    </article>
+
+                    <article class="card fade-up stagger-3">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #D1FAE5 0%, white 100%);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Accompagnement sur mesure</h3>
+                        <p class="text-gray-600 mb-6">Un suivi personnalise pour migrer vos outils vers des solutions libres et souveraines.</p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Audit de votre ecosysteme</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Plan de migration detaille</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Migration assistee etape par etape</li>
+                            <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" class="mt-0.5 flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>Formation de vos equipes</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 section-alt">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-up">
+                <h2 class="text-3xl font-bold mb-6">Besoin d'un accompagnement ?</h2>
+                <p class="text-xl text-gray-600 mb-8">Contactez-nous pour discuter de votre projet de transition numerique.</p>
+                <button onclick="window.location.href='contact.html'" class="btn-primary">Nous contacter<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (visible on all pages) -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <button onclick="window.location.href='index.html'" class="flex items-center gap-3 mb-6 bg-transparent border-none p-0 cursor-pointer">
+                        <img src="images/Logo_blanc-Photoroom.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain;">
+                    </button>
+                    <p class="text-gray-400 mb-6">ASBL bruxelloise de plaidoyer pour la souverainete numerique.</p>
+                    <a href="mailto:contact@dynasoc.info" class="text-cyan-400 hover:underline">contact@dynasoc.info</a>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <ul class="space-y-3">
+                        <li><button onclick="window.location.href='index.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Accueil</button></li>
+                        <li><button onclick="window.location.href='mission.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Mission</button></li>
+                        <li><button onclick="window.location.href='actions.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Actions</button></li>
+                        <li><button onclick="window.location.href='ressources.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Ressources</button></li>
+                        <li><button onclick="window.location.href='communaute.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Communaute</button></li>
+                        <li><button onclick="window.location.href='pme.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">PME</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Confidentialite</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Statuts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Nous soutenir</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4 text-sm">Recevez nos actualites et invitations.</p>
+                    <form onsubmit="event.preventDefault(); this.reset(); alert('Inscription confirmée !');" class="flex gap-2">
+                        <input type="email" placeholder="Votre email" class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm">
+                        <button type="submit" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors border-none cursor-pointer text-white" aria-label="S'inscrire">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">&copy; 2025 Dynasoc<span class="text-xs align-top">®</span> ASBL. Tous droits reserves.</p>
+                <p class="text-gray-500 text-sm">Fait avec passion a Bruxelles</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize variables first
+        const header = document.getElementById('header');
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const canvas = document.getElementById('hero-canvas');
+        
+        let ctx = null;
+        let nodes = [];
+        let animationId = null;
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Page navigation system
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show target page
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Trigger animations on new page
+            setTimeout(() => {
+                targetPage.querySelectorAll('.fade-up').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+
+            // Restart canvas if on home page
+            if (pageId === 'home' && canvas) {
+                initCanvas();
+            } else if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function closeMobileMenu() {
+            if (mobileMenu) mobileMenu.classList.remove('open');
+            if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        // Mobile menu toggle
+        if (mobileToggle && mobileMenu) {
+            mobileToggle.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.toggle('open');
+                mobileToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Accordion functionality
+        document.querySelectorAll('[data-accordion]').forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    document.querySelectorAll('[data-accordion].active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                        activeItem.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                    });
+                    if (!isActive) {
+                        item.classList.add('active');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target) || 0;
+            const duration = 2000;
+            const start = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.round(target * easeOut);
+                if (progress < 1) requestAnimationFrame(update);
+                else element.textContent = target;
+            }
+            requestAnimationFrame(update);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number[data-target]').forEach(el => statsObserver.observe(el));
+
+        // Canvas animation
+        function initCanvas() {
+            if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            function resize() {
+                canvas.width = canvas.offsetWidth || 800;
+                canvas.height = canvas.offsetHeight || 600;
+                initNodes();
+            }
+
+            function initNodes() {
+                nodes = [];
+                const count = Math.min(Math.floor(((canvas.width || 800) * (canvas.height || 600)) / 25000), 60);
+                for (let i = 0; i < count; i++) {
+                    nodes.push({
+                        x: Math.random() * (canvas.width || 800),
+                        y: Math.random() * (canvas.height || 600),
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.max(2, Math.random() * 3 + 2),
+                        color: Math.random() > 0.5 ? '#06B6D4' : '#0066FF'
+                    });
+                }
+            }
+
+            function drawNode(node) {
+                if (!ctx) return;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, Math.max(1, node.radius), 0, Math.PI * 2);
+                ctx.fillStyle = node.color;
+                ctx.fill();
+            }
+
+            function drawConnections() {
+                if (!ctx) return;
+                const maxDist = 150;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dx = nodes[i].x - nodes[j].x;
+                        const dy = nodes[i].y - nodes[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDist) {
+                            const alpha = Math.max(0.02, (1 - dist / maxDist) * 0.3);
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function updateNodes() {
+                nodes.forEach(node => {
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 200 && dist > 0) {
+                        const force = (200 - dist) / 200 * 0.02;
+                        node.vx += (dx / dist) * force;
+                        node.vy += (dy / dist) * force;
+                    }
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    node.vx *= 0.99;
+                    node.vy *= 0.99;
+                    const w = canvas.width || 800;
+                    const h = canvas.height || 600;
+                    if (node.x < 0 || node.x > w) node.vx *= -1;
+                    if (node.y < 0 || node.y > h) node.vy *= -1;
+                    node.x = Math.max(0, Math.min(w, node.x));
+                    node.y = Math.max(0, Math.min(h, node.y));
+                });
+            }
+
+            function animate() {
+                if (!ctx || !canvas) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawConnections();
+                nodes.forEach(drawNode);
+                updateNodes();
+                animationId = requestAnimationFrame(animate);
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show initial animations
+            document.querySelectorAll('#page-home .fade-up').forEach(el => {
+                setTimeout(() => el.classList.add('visible'), 100);
+            });
+            initCanvas();
+        });
+
+        // Cleanup
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && animationId) cancelAnimationFrame(animationId);
+            else if (!document.hidden && document.getElementById('page-home')?.classList.contains('active')) initCanvas();
+        });
+    </script>
+</body>
+</html>
