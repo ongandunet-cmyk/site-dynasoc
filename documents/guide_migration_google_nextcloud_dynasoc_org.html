@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide pratique : migrer de Google Workspace vers Nextcloud | Dynasoc ASBL</title>
+  <meta name="description" content="Guide pratique pour migrer de Google Workspace vers Nextcloud : export des données, import, configuration des appareils, points RGPD, checklist et bonnes pratiques.">
+  <link rel="canonical" href="https://www.dynasoc.org/guide-migration-google-nextcloud.html">
+  <style>
+    :root {
+      --bg: #f5f8fb;
+      --surface: #ffffff;
+      --ink: #1b2733;
+      --muted: #5d6b7a;
+      --line: #dbe5ee;
+      --primary: #0b4f8a;
+      --primary-dark: #07385f;
+      --accent: #14a38b;
+      --warning: #f59e0b;
+      --danger: #c2410c;
+      --soft-blue: #e8f3fb;
+      --soft-green: #e9f8f4;
+      --soft-orange: #fff4df;
+      --shadow: 0 18px 45px rgba(17, 42, 71, .10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #edf5fb 0%, var(--bg) 34%, #ffffff 100%);
+      line-height: 1.65;
+    }
+
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      padding: 20px 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .topbar .page {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      border-bottom: 1px solid rgba(11, 79, 138, .12);
+      padding-bottom: 16px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+    }
+
+    header.hero {
+      padding: 56px 0 34px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+      font-size: .9rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.15;
+      color: var(--primary-dark);
+      margin: 0 0 14px;
+    }
+
+    h1 {
+      font-size: clamp(2.15rem, 5vw, 4.5rem);
+      letter-spacing: -.045em;
+      max-width: 850px;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      letter-spacing: -.03em;
+      margin-top: 10px;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-top: 28px;
+    }
+
+    .lead {
+      font-size: clamp(1.1rem, 2vw, 1.28rem);
+      color: #34495e;
+      max-width: 780px;
+      margin: 0 0 28px;
+    }
+
+    .meta-card, .card, .toc, .cta {
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid rgba(11, 79, 138, .12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .meta-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .meta-list strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: .88rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      border: 1px solid var(--primary);
+    }
+
+    .button.secondary {
+      background: #fff;
+      color: var(--primary);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 32px;
+      padding: 30px 0 80px;
+    }
+
+    aside {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+
+    .toc {
+      padding: 20px;
+    }
+
+    .toc h2 {
+      font-size: 1rem;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .toc li { margin: 8px 0; }
+
+    .content {
+      display: grid;
+      gap: 24px;
+    }
+
+    section.card {
+      padding: clamp(22px, 4vw, 40px);
+      scroll-margin-top: 24px;
+    }
+
+    p { margin: 0 0 16px; }
+    ul, ol { padding-left: 1.35rem; margin: 12px 0 0; }
+    li + li { margin-top: 8px; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .mini {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .mini strong {
+      display: block;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .notice {
+      margin: 20px 0;
+      padding: 18px 20px;
+      border-radius: 16px;
+      border-left: 5px solid var(--accent);
+      background: var(--soft-green);
+    }
+
+    .notice.warning {
+      border-left-color: var(--warning);
+      background: var(--soft-orange);
+    }
+
+    .notice.danger {
+      border-left-color: var(--danger);
+      background: #fff0e8;
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .step {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .step::before {
+      content: counter(step);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--primary);
+      color: white;
+      font-weight: 900;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .checklist li {
+      position: relative;
+      padding: 12px 14px 12px 42px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin: 0;
+    }
+
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .cta {
+      padding: clamp(26px, 4vw, 44px);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+    }
+
+    .cta h2, .cta p { color: #fff; }
+    .cta .button { background: #fff; color: var(--primary-dark); border-color: #fff; }
+
+    footer {
+      padding: 36px 0 50px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, main, .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .topbar .page {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .topbar, aside, .actions { display: none; }
+      main { display: block; padding: 0; }
+      section.card, .meta-card, .cta {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="page">
+      <div class="brand">Dynasoc ASBL · Guides pratiques pour la souveraineté numérique</div>
+      <a href="https://www.dynasoc.org">www.dynasoc.org</a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="page hero-grid">
+      <div>
+        <div class="eyebrow">Guide pratique · Migration cloud</div>
+        <h1>Migrer de Google Workspace vers Nextcloud</h1>
+        <p class="lead">
+          Une méthode structurée pour reprendre le contrôle de vos fichiers, agendas, contacts et outils collaboratifs,
+          sans interrompre le travail de vos équipes.
+        </p>
+        <div class="actions">
+          <a class="button" href="#checklist">Voir la checklist</a>
+          <a class="button secondary" href="#migration">Commencer la migration</a>
+        </div>
+      </div>
+
+      <div class="meta-card" aria-label="Informations du guide">
+        <ul class="meta-list">
+          <li><strong>Public cible</strong> Administrateurs IT, responsables d’ASBL, dirigeants de PME</li>
+          <li><strong>Objectif</strong> Réussir une transition fluide depuis Google Workspace vers Nextcloud</li>
+          <li><strong>Niveau</strong> Intermédiaire</li>
+          <li><strong>Temps de lecture</strong> Environ 12 minutes</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <aside>
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">Sommaire</h2>
+        <ol>
+          <li><a href="#resume">Résumé exécutif</a></li>
+          <li><a href="#preparer">Préparer la migration</a></li>
+          <li><a href="#export">Exporter les données Google</a></li>
+          <li><a href="#import">Importer dans Nextcloud</a></li>
+          <li><a href="#migration">Utiliser l’intégration Google</a></li>
+          <li><a href="#appareils">Configurer les appareils</a></li>
+          <li><a href="#rgpd">Points RGPD</a></li>
+          <li><a href="#checklist">Checklist</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <section id="resume" class="card">
+        <h2>Résumé exécutif</h2>
+        <p>
+          Quitter Google Workspace pour Nextcloud permet à une organisation de mieux maîtriser ses données, ses coûts
+          et ses choix d’hébergement. La migration repose sur trois opérations principales : récupérer les données
+          depuis Google, les organiser dans Nextcloud, puis reconnecter les appareils et les outils collaboratifs.
+        </p>
+        <p>
+          Pour une ASBL ou une PME, la réussite ne dépend pas uniquement de la technique. Elle repose aussi sur une
+          bonne préparation, une communication claire avec les utilisateurs et une période de transition suffisamment
+          accompagnée.
+        </p>
+
+        <div class="summary-grid">
+          <div class="mini">
+            <strong>1. Exporter</strong>
+            Récupérer fichiers, contacts, agendas et photos via Google Takeout ou l’intégration Google de Nextcloud.
+          </div>
+          <div class="mini">
+            <strong>2. Réorganiser</strong>
+            Nettoyer les données, préparer l’arborescence et importer progressivement dans Nextcloud.
+          </div>
+          <div class="mini">
+            <strong>3. Accompagner</strong>
+            Configurer les appareils, former les équipes et vérifier les usages après migration.
+          </div>
+        </div>
+      </section>
+
+      <section id="preparer" class="card">
+        <h2>Avant de commencer</h2>
+        <p>
+          Une migration réussie commence par un inventaire simple : quels comptes doivent migrer, quels volumes de
+          données sont concernés, quels dossiers sont partagés et quels outils sont indispensables au quotidien.
+        </p>
+
+        <div class="notice warning">
+          <strong>Point d’attention :</strong> évitez de lancer une migration complète sans test préalable. Commencez
+          par un compte pilote ou une petite équipe afin de valider les formats, les droits d’accès et les habitudes de travail.
+        </div>
+
+        <h3>À vérifier avant la migration</h3>
+        <ul class="checklist">
+          <li>La capacité de stockage disponible sur votre instance Nextcloud.</li>
+          <li>La qualité de la connexion internet pour les gros volumes de données.</li>
+          <li>Les droits d’accès aux espaces Google Drive partagés.</li>
+          <li>La liste des agendas et carnets de contacts à conserver.</li>
+          <li>La solution bureautique prévue : Nextcloud Office avec Collabora Online ou OnlyOffice.</li>
+          <li>Les règles de sauvegarde et de restauration côté Nextcloud.</li>
+        </ul>
+      </section>
+
+      <section id="export" class="card">
+        <h2>1. Exporter vos données depuis Google</h2>
+        <p>
+          La première étape consiste à récupérer l’ensemble des données utiles depuis Google Workspace. L’outil le plus
+          direct est Google Takeout, qui permet d’exporter les informations dans des formats standards et réutilisables.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Donnée à migrer</th>
+              <th>Option à sélectionner</th>
+              <th>Format recommandé</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fichiers et dossiers</td>
+              <td>Google Drive</td>
+              <td>Documents convertis en formats Office ou PDF</td>
+            </tr>
+            <tr>
+              <td>Contacts</td>
+              <td>Contacts</td>
+              <td>vCard, fichier .vcf</td>
+            </tr>
+            <tr>
+              <td>Agendas</td>
+              <td>Agenda</td>
+              <td>iCalendar, fichier .ics</td>
+            </tr>
+            <tr>
+              <td>Photos et vidéos</td>
+              <td>Google Photos</td>
+              <td>Archives ZIP</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="notice">
+          <strong>Conseil technique :</strong> privilégiez des archives ZIP de 2 Go à 5 Go. Des fichiers trop volumineux
+          augmentent les risques d’échec de téléchargement, surtout sur une connexion instable.
+        </div>
+      </section>
+
+      <section id="import" class="card">
+        <h2>2. Importer et organiser dans Nextcloud</h2>
+        <p>
+          Une fois les archives téléchargées, prenez le temps de nettoyer et de classer les données avant leur import.
+          Cette étape évite de transférer des doublons, des fichiers obsolètes ou des dossiers inutiles.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div>
+              <h3>Extraire les archives</h3>
+              <p>Décompressez les fichiers ZIP sur un ordinateur local disposant d’un espace suffisant.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <h3>Classer les dossiers</h3>
+              <p>Recréez une arborescence claire : direction, administration, projets, communication, archives.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <h3>Synchroniser les fichiers</h3>
+              <p>Installez le client Nextcloud Desktop pour envoyer progressivement les dossiers vers le serveur.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div>
+              <h3>Importer contacts et agendas</h3>
+              <p>Depuis l’interface web Nextcloud, importez les fichiers .vcf dans Contacts et les fichiers .ics dans Agenda.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="notice warning">
+          <strong>Bonne pratique :</strong> ne migrez pas uniquement “tel quel”. Une migration est l’occasion de simplifier
+          l’organisation documentaire et de supprimer ce qui n’a plus de valeur.
+        </div>
+      </section>
+
+      <section id="migration" class="card">
+        <h2>3. Utiliser l’intégration Google de Nextcloud</h2>
+        <p>
+          Pour éviter de télécharger puis téléverser manuellement de grands volumes de données, Nextcloud peut importer
+          certaines données directement depuis Google grâce à son application d’intégration Google.
+        </p>
+
+        <h3>Procédure générale</h3>
+        <ol>
+          <li>Activez l’application d’intégration ou de migration Google dans l’administration Nextcloud.</li>
+          <li>Créez un projet dans la console Google Cloud.</li>
+          <li>Configurez l’écran de consentement OAuth 2.0 et ajoutez votre domaine Nextcloud comme domaine autorisé.</li>
+          <li>Générez un identifiant client et un secret OAuth 2.0.</li>
+          <li>Copiez ces informations dans les paramètres d’intégration de Nextcloud.</li>
+          <li>Laissez les utilisateurs connecter leur compte Google et lancer l’import depuis Nextcloud.</li>
+        </ol>
+
+        <div class="notice danger">
+          <strong>Attention :</strong> cette méthode demande une configuration rigoureuse des autorisations Google.
+          Documentez chaque étape et limitez les droits aux données réellement nécessaires.
+        </div>
+      </section>
+
+      <section id="appareils" class="card">
+        <h2>4. Configurer les appareils et les usages quotidiens</h2>
+        <p>
+          Après l’import, les utilisateurs doivent retrouver leurs habitudes : accès aux fichiers, synchronisation des
+          calendriers, carnets d’adresses et édition collaborative des documents.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Besoin</th>
+              <th>Solution recommandée</th>
+              <th>Remarque</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Synchroniser les fichiers sur ordinateur</td>
+              <td>Nextcloud Desktop</td>
+              <td>Disponible pour Windows, macOS et Linux.</td>
+            </tr>
+            <tr>
+              <td>Accéder aux fichiers sur mobile</td>
+              <td>Application mobile Nextcloud</td>
+              <td>Permet la consultation, l’envoi automatique de photos et le partage.</td>
+            </tr>
+            <tr>
+              <td>Synchroniser contacts et agendas Android</td>
+              <td>DAVx5</td>
+              <td>Compatible CardDAV et CalDAV.</td>
+            </tr>
+            <tr>
+              <td>Synchroniser contacts et agendas iOS</td>
+              <td>Réglages système iPhone/iPad</td>
+              <td>Configuration native CalDAV et CardDAV.</td>
+            </tr>
+            <tr>
+              <td>Remplacer Google Docs, Sheets et Slides</td>
+              <td>Nextcloud Office, Collabora Online ou OnlyOffice</td>
+              <td>Permet l’édition collaborative depuis le navigateur.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="rgpd" class="card">
+        <h2>Points de vigilance RGPD et souveraineté numérique</h2>
+        <p>
+          La migration vers Nextcloud est aussi une décision de gouvernance. Elle permet de choisir où les données sont
+          hébergées, qui les administre, quelles sauvegardes sont appliquées et quelles règles d’accès protègent les utilisateurs.
+        </p>
+
+        <ul class="checklist">
+          <li>Choisir un hébergement adapté : Belgique, Union européenne ou infrastructure maîtrisée.</li>
+          <li>Documenter les sous-traitants et les responsabilités de traitement.</li>
+          <li>Activer l’authentification à deux facteurs pour les comptes sensibles.</li>
+          <li>Mettre en place une politique de mots de passe robuste.</li>
+          <li>Contrôler les partages publics et les liens accessibles sans compte.</li>
+          <li>Tester régulièrement les sauvegardes et la restauration.</li>
+        </ul>
+      </section>
+
+      <section id="checklist" class="card">
+        <h2>Checklist de migration</h2>
+        <ul class="checklist">
+          <li>Inventaire des comptes Google Workspace à migrer.</li>
+          <li>Inventaire des Drive partagés, dossiers critiques et propriétaires de fichiers.</li>
+          <li>Export Google Takeout ou configuration de l’intégration Google.</li>
+          <li>Nettoyage des doublons, archives et fichiers obsolètes.</li>
+          <li>Création de l’arborescence Nextcloud cible.</li>
+          <li>Import des fichiers, contacts et agendas.</li>
+          <li>Configuration des clients Desktop et mobiles.</li>
+          <li>Activation de la suite bureautique en ligne.</li>
+          <li>Contrôle des droits d’accès et des partages.</li>
+          <li>Formation courte des utilisateurs.</li>
+          <li>Vérification finale avec un groupe pilote.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Erreurs fréquentes à éviter</h2>
+        <ul>
+          <li>Migrer sans nettoyer les données au préalable.</li>
+          <li>Oublier les Drive partagés ou les fichiers appartenant à d’anciens comptes.</li>
+          <li>Sous-estimer le temps nécessaire à la synchronisation initiale.</li>
+          <li>Ne pas former les utilisateurs aux nouveaux réflexes de partage.</li>
+          <li>Confondre migration technique et adoption réelle par l’équipe.</li>
+        </ul>
+      </section>
+
+      <section id="faq" class="card">
+        <h2>FAQ</h2>
+
+        <h3>Peut-on remplacer complètement Google Workspace par Nextcloud ?</h3>
+        <p>
+          Oui, dans de nombreux cas. Nextcloud couvre les fichiers, le partage, les contacts, les agendas et la bureautique
+          collaborative. Certaines organisations conserveront toutefois temporairement quelques services Google pendant
+          une phase de transition.
+        </p>
+
+        <h3>Combien de temps faut-il prévoir ?</h3>
+        <p>
+          La configuration technique peut être rapide, mais la durée réelle dépend du volume de données, du nombre
+          d’utilisateurs et de la qualité de l’organisation documentaire existante.
+        </p>
+
+        <h3>Faut-il migrer tout le monde en une seule fois ?</h3>
+        <p>
+          Non. Une migration progressive, avec un groupe pilote, réduit les risques et permet d’adapter la méthode avant
+          le déploiement général.
+        </p>
+      </section>
+
+      <section class="cta">
+        <h2>Besoin d’un accompagnement ?</h2>
+        <p>
+          Dynasoc ASBL peut vous aider à auditer votre environnement actuel, préparer votre instance Nextcloud et piloter
+          une migration adaptée aux besoins de votre organisation à Bruxelles ou en Wallonie.
+        </p>
+        <div class="actions">
+          <a class="button" href="https://www.dynasoc.org">Contacter Dynasoc</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="page">
+      <strong>Dynasoc ASBL</strong><br>
+      Guide pratique pour la souveraineté numérique · Version HTML professionnelle.
+    </div>
+  </footer>
+</body>
+</html>

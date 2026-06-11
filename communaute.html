@@ -103,7 +103,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            z-index: 10;
         }
 
         /* Buttons */
@@ -269,6 +269,17 @@
         .stagger-3 { transition-delay: 0.3s; }
         .stagger-4 { transition-delay: 0.4s; }
 
+        /* Fallback for responsive elements */
+        @media (max-width: 1023px) {
+            .desktop-nav { display: none !important; }
+            .mobile-toggle-btn { display: block !important; }
+        }
+        @media (min-width: 1024px) {
+            .desktop-nav { display: flex !important; }
+            .mobile-toggle-btn { display: none !important; }
+            .mobile-menu { display: none !important; }
+        }
+
         /* Mobile Menu */
         .mobile-menu {
             display: none;
@@ -377,12 +388,12 @@
                     <img src="images/logo.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain; margin: -50px 0;">
                 </button>
 
-                <nav class="hidden lg:flex items-center gap-1" role="navigation" aria-label="Navigation principale">
+                <nav class="desktop-nav hidden lg:flex items-center gap-1" role="navigation" aria-label="Navigation principale">
                     <button onclick="window.location.href='index.html'" class="nav-link" data-page="home">Accueil</button>
                     <button onclick="window.location.href='mission.html'" class="nav-link" data-page="mission">Notre Mission</button>
                     <button onclick="window.location.href='actions.html'" class="nav-link" data-page="actions">Nos Actions</button>
                     <button onclick="window.location.href='ressources.html'" class="nav-link" data-page="ressources">Ressources</button>
-                    <button onclick="window.location.href='communaute.html'" class="nav-link" class="nav-link active" data-page="communaute">Communaute</button>
+                    <button onclick="window.location.href='communaute.html'" class="nav-link active" data-page="communaute">Communaute</button>
                     <button onclick="window.location.href='pme.html'" class="nav-link" data-page="pme">PME</button>
                     <button onclick="window.location.href='contact.html'" class="nav-link" data-page="contact">Contact</button>
                 </nav>
@@ -394,7 +405,7 @@
                         <button onclick="changeLang('en')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">EN</button>
                     </div>
                     
-                    <button class="lg:hidden p-2 bg-transparent border-none" id="mobile-toggle" aria-label="Ouvrir le menu">
+                    <button class="mobile-toggle-btn lg:hidden p-2 bg-transparent border-none" id="mobile-toggle" aria-label="Ouvrir le menu">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -534,43 +545,63 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 <div class="lg:col-span-1">
-                    <button onclick="window.location.href='index.html'" class="flex items-center gap-3 mb-6 bg-transparent border-none p-0 cursor-pointer">
+                    <button onclick="window.location.href='index.html'" class="flex items-center gap-3 mb-6 bg-transparent border-none p-0 cursor-pointer" aria-label="Dynasoc Accueil">
                         <img src="images/Logo_blanc-Photoroom.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain;">
                     </button>
-                    <p class="text-gray-400 mb-6">ASBL bruxelloise de plaidoyer pour la souverainete numerique.</p>
-                    <a href="mailto:contact@dynasoc.org" class="text-cyan-400 hover:underline">contact@dynasoc.org</a>
+                    <p class="text-gray-300 mb-6 text-base">ASBL bruxelloise de plaidoyer pour la souveraineté numérique.</p>
                 </div>
 
                 <div>
-                    <h4 class="font-bold mb-4">Navigation</h4>
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Navigation</h4>
                     <ul class="space-y-3">
-                        <li><button onclick="window.location.href='index.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Accueil</button></li>
-                        <li><button onclick="window.location.href='mission.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Mission</button></li>
-                        <li><button onclick="window.location.href='actions.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Actions</button></li>
-                        <li><button onclick="window.location.href='ressources.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Ressources</button></li>
-                        <li><button onclick="window.location.href='communaute.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">Communaute</button></li>
-                        <li><button onclick="window.location.href='pme.html'" class="text-gray-400 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left">PME</button></li>
+                        <li><button onclick="window.location.href='index.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Accueil</button></li>
+                        <li><button onclick="window.location.href='mission.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Notre Mission</button></li>
+                        <li><button onclick="window.location.href='actions.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Nos Actions</button></li>
+                        <li><button onclick="window.location.href='ressources.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Ressources</button></li>
+                        <li><button onclick="window.location.href='communaute.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Communauté</button></li>
+                        <li><button onclick="window.location.href='pme.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">PME</button></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-bold mb-4">Legal</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Confidentialite</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Statuts</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-cyan-400 transition-colors">Nous soutenir</a></li>
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Contact</h4>
+                    <ul class="space-y-3 text-base text-gray-300">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Avenue Des Arts 12,<br>1210 Saint-Josse</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <a href="tel:+32474034320" class="hover:text-cyan-400 transition-colors font-medium text-white">+32 474 03 43 20</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <a href="mailto:contact@dynasoc.be" class="hover:text-cyan-400 transition-colors font-medium text-white">contact@dynasoc.be</a>
+                        </li>
+                        <li class="text-sm text-gray-500 pt-2 border-t border-gray-800">
+                            TVA : BE1038.586.522
+                        </li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="font-bold mb-4">Newsletter</h4>
-                    <p class="text-gray-400 mb-4 text-sm">Recevez nos actualites et invitations.</p>
-                    <form onsubmit="event.preventDefault(); this.reset(); alert('Inscription confirmée !');" class="flex gap-2">
-                        <input type="email" placeholder="Votre email" class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm">
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Newsletter</h4>
+                    <p class="text-gray-300 mb-4 text-base">Recevez nos actualités et invitations.</p>
+                    <form action="https://api.web3forms.com/submit" method="POST" onsubmit="event.preventDefault(); handleNewsletterSubmit(this);" class="flex gap-2 mb-6">
+                        <input type="hidden" name="access_key" value="ca368841-3261-41dc-8d98-edfd1d2c9edc">
+                        <input type="hidden" name="subject" value="Nouvelle inscription Newsletter - Dynasoc">
+                        <input type="email" name="email" placeholder="Votre email" required class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm">
                         <button type="submit" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors border-none cursor-pointer text-white" aria-label="S'inscrire">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </button>
                     </form>
+                    
+                    <h4 class="font-bold mb-3 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="confidentialite.html" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Confidentialité</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Statuts</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Nous soutenir</a></li>
+                    </ul>
                 </div>
             </div>
 
@@ -579,6 +610,38 @@
                 <p class="text-gray-500 text-sm">Fait avec passion à Bruxelles</p>
             </div>
         </div>
+        <script>
+        function handleNewsletterSubmit(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(new FormData(form)))
+            })
+            .then(async (response) => {
+                if (response.status === 200) {
+                    alert('Inscription confirmée !');
+                    form.reset();
+                } else {
+                    const json = await response.json();
+                    alert(json.message || "Une erreur s'est produite.");
+                }
+            })
+            .catch(() => {
+                alert("Une erreur s'est produite lors de l'inscription.");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            });
+        }
+        </script>
     </footer>
 
     <script>
@@ -707,55 +770,128 @@
 
         // Canvas animation
         function initCanvas() {
-            if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (!canvas) return;
             
             ctx = canvas.getContext('2d');
             if (!ctx) return;
 
+            const colors = [
+                { r: 6, g: 182, b: 212, hex: '#06B6D4' },
+                { r: 0, g: 102, b: 255, hex: '#0066FF' },
+                { r: 16, g: 185, b: 129, hex: '#10B981' },
+                { r: 139, g: 92, b: 246, hex: '#8B5CF6' },
+                { r: 34, g: 211, b: 238, hex: '#22D3EE' },
+                { r: 59, g: 130, b: 246, hex: '#3B82F6' }
+            ];
+
+            let localMouseX = -1000;
+            let localMouseY = -1000;
+            let localMouseActive = false;
+
             function resize() {
                 canvas.width = canvas.offsetWidth || 800;
                 canvas.height = canvas.offsetHeight || 600;
-                initNodes();
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    drawStaticBackground();
+                } else {
+                    initNodes();
+                }
+            }
+
+            function drawStaticBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                grad.addColorStop(0, 'rgba(6, 182, 212, 0.06)');
+                grad.addColorStop(0.5, 'rgba(0, 102, 255, 0.04)');
+                grad.addColorStop(1, 'rgba(139, 92, 246, 0.03)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
             function initNodes() {
                 nodes = [];
-                const count = Math.min(Math.floor(((canvas.width || 800) * (canvas.height || 600)) / 25000), 60);
+                const count = 120; // Between 100 and 150 particles
                 for (let i = 0; i < count; i++) {
+                    const rand = Math.random();
+                    let baseRadius;
+                    if (rand < 0.65) {
+                        baseRadius = Math.random() * 2.5 + 1; // 1 to 3.5px (65%)
+                    } else if (rand < 0.90) {
+                        baseRadius = Math.random() * 6 + 3; // 3 to 9px (25%)
+                    } else {
+                        baseRadius = Math.random() * 12 + 6; // 6 to 18px (10%)
+                    }
+
+                    const colorObj = colors[Math.floor(Math.random() * colors.length)];
+
                     nodes.push({
-                        x: Math.random() * (canvas.width || 800),
-                        y: Math.random() * (canvas.height || 600),
-                        vx: (Math.random() - 0.5) * 0.5,
-                        vy: (Math.random() - 0.5) * 0.5,
-                        radius: Math.max(2, Math.random() * 3 + 2),
-                        color: Math.random() > 0.5 ? '#06B6D4' : '#0066FF'
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() * 0.24 - 0.12),
+                        vy: (Math.random() * 0.24 - 0.12),
+                        baseRadius: baseRadius,
+                        radius: baseRadius,
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        pulseSpeed: Math.random() * 0.007 + 0.003,
+                        glowPhase: Math.random() * Math.PI * 2,
+                        glowSpeed: Math.random() * 0.01 + 0.005,
+                        color: colorObj
                     });
                 }
             }
 
             function drawNode(node) {
                 if (!ctx) return;
+
+                const x = node.x;
+                const y = node.y;
+                const r = Math.max(0.5, node.radius);
+
+                if (node.baseRadius > 3.5) {
+                    const glowOpacity = 0.20 + 0.15 * Math.sin(node.glowPhase);
+                    const glowRadius = r * 4;
+
+                    const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
+                    glowGrad.addColorStop(0, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, ${glowOpacity})`);
+                    glowGrad.addColorStop(1, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0)`);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = glowGrad;
+                    ctx.fill();
+                }
+
+                const grad = ctx.createRadialGradient(x - r * 0.2, y - r * 0.2, 0, x, y, r);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                grad.addColorStop(0.3, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0.7)`);
+                grad.addColorStop(1, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0)`);
+
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, Math.max(1, node.radius), 0, Math.PI * 2);
-                ctx.fillStyle = node.color;
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
                 ctx.fill();
             }
 
             function drawConnections() {
                 if (!ctx) return;
-                const maxDist = 150;
+                const maxDist = 160;
                 for (let i = 0; i < nodes.length; i++) {
                     for (let j = i + 1; j < nodes.length; j++) {
-                        const dx = nodes[i].x - nodes[j].x;
-                        const dy = nodes[i].y - nodes[j].y;
+                        const p1 = nodes[i];
+                        const p2 = nodes[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
                         if (dist < maxDist) {
-                            const alpha = Math.max(0.02, (1 - dist / maxDist) * 0.3);
+                            const alpha = (1 - dist / maxDist) * 0.18;
                             ctx.beginPath();
-                            ctx.moveTo(nodes[i].x, nodes[i].y);
-                            ctx.lineTo(nodes[j].x, nodes[j].y);
-                            ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
-                            ctx.lineWidth = 1;
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+                            grad.addColorStop(0, `rgba(${p1.color.r}, ${p1.color.g}, ${p1.color.b}, ${alpha})`);
+                            grad.addColorStop(1, `rgba(${p2.color.r}, ${p2.color.g}, ${p2.color.b}, ${alpha})`);
+                            ctx.strokeStyle = grad;
+                            ctx.lineWidth = 0.6;
                             ctx.stroke();
                         }
                     }
@@ -764,28 +900,57 @@
 
             function updateNodes() {
                 nodes.forEach(node => {
-                    const dx = mouseX - node.x;
-                    const dy = mouseY - node.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 200 && dist > 0) {
-                        const force = (200 - dist) / 200 * 0.02;
-                        node.vx += (dx / dist) * force;
-                        node.vy += (dy / dist) * force;
+                    node.pulsePhase += node.pulseSpeed;
+                    node.radius = node.baseRadius * (1 + 0.25 * Math.sin(node.pulsePhase));
+
+                    if (node.baseRadius > 3.5) {
+                        node.glowPhase += node.glowSpeed;
                     }
+
+                    if (localMouseActive) {
+                        const dx = localMouseX - node.x;
+                        const dy = localMouseY - node.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 280 && dist > 0) {
+                            const pull = (1 - dist / 280) * 0.35 + 0.05;
+                            node.vx += (dx / dist) * pull;
+                            node.vy += (dy / dist) * pull;
+                            
+                            const damping = 0.88 + 0.08 * (dist / 280);
+                            node.vx *= damping;
+                            node.vy *= damping;
+                        }
+                    }
+
                     node.x += node.vx;
                     node.y += node.vy;
-                    node.vx *= 0.99;
-                    node.vy *= 0.99;
-                    const w = canvas.width || 800;
-                    const h = canvas.height || 600;
-                    if (node.x < 0 || node.x > w) node.vx *= -1;
-                    if (node.y < 0 || node.y > h) node.vy *= -1;
-                    node.x = Math.max(0, Math.min(w, node.x));
-                    node.y = Math.max(0, Math.min(h, node.y));
+                    node.vx *= 0.992;
+                    node.vy *= 0.992;
+
+                    const r = node.radius;
+                    if (node.x - r < 0) {
+                        node.x = r;
+                        node.vx = -node.vx * 0.6;
+                    } else if (node.x + r > canvas.width) {
+                        node.x = canvas.width - r;
+                        node.vx = -node.vx * 0.6;
+                    }
+
+                    if (node.y - r < 0) {
+                        node.y = r;
+                        node.vy = -node.vy * 0.6;
+                    } else if (node.y + r > canvas.height) {
+                        node.y = canvas.height - r;
+                        node.vy = -node.vy * 0.6;
+                    }
                 });
             }
 
             function animate() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    drawStaticBackground();
+                    return;
+                }
                 if (!ctx || !canvas) return;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawConnections();
@@ -794,10 +959,16 @@
                 animationId = requestAnimationFrame(animate);
             }
 
-            canvas.addEventListener('mousemove', (e) => {
+            const parent = canvas.parentElement || canvas;
+            parent.addEventListener('mousemove', (e) => {
                 const rect = canvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
+                localMouseX = e.clientX - rect.left;
+                localMouseY = e.clientY - rect.top;
+                localMouseActive = true;
+            });
+
+            parent.addEventListener('mouseleave', () => {
+                localMouseActive = false;
             });
 
             window.addEventListener('resize', resize);

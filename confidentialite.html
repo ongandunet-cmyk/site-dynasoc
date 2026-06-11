@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynasoc® | Transition Numérique Souveraine</title>
+    <meta name="description" content="Dynasoc accompagne les ASBL, ONG et PME bruxelloises vers un numérique libre, souverain et conforme RGPD.">
+    <link rel="icon" type="image/jpeg" href="images/favicon.jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #06B6D4;
+            --primary-dark: #0891B2;
+            --secondary: #0066FF;
+            --accent: #0A0A0A;
+            --bg-light: #F0FAFB;
+            --bg-gray: #F5F5F5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            background: #fff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: inherit;
+            font-family: inherit;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 80%; }
+
+        .nav-link:hover,
+        .nav-link.active { color: var(--primary); }
+
+        /* Hero Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(6,182,212,0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e5e5;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--bg-light) 0%, white 100%);
+        }
+
+        /* Accordion */
+        .accordion-item {
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+            border: none;
+            text-align: left;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover { background: var(--bg-light); }
+
+        .accordion-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-icon svg { transition: transform 0.3s ease; }
+
+        .accordion-item.active .accordion-icon { background: var(--primary); color: white; }
+        .accordion-item.active .accordion-icon svg { transform: rotate(180deg); }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion-item.active .accordion-content { max-height: 600px; }
+
+        .accordion-body {
+            padding: 0 2rem 1.5rem;
+            color: #525252;
+            line-height: 1.75;
+        }
+
+        /* Stats */
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Section Backgrounds */
+        .section-alt { background: var(--bg-light); }
+        .section-gray { background: var(--bg-gray); }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
+        /* Fallback for responsive elements */
+        @media (max-width: 1023px) {
+            .desktop-nav { display: none !important; }
+            .mobile-toggle-btn { display: block !important; }
+        }
+        @media (min-width: 1024px) {
+            .desktop-nav { display: flex !important; }
+            .mobile-toggle-btn { display: none !important; }
+            .mobile-menu { display: none !important; }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 999;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pattern */
+        .pattern-dots {
+            background-image: radial-gradient(circle, rgba(6,182,212,0.08) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Focus States */
+        *:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e5e5e5;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(6,182,212,0.15);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .img-hover { overflow: hidden; border-radius: 1rem; }
+        .img-hover img { transition: transform 0.5s ease; }
+        .img-hover:hover img { transform: scale(1.05); }
+    </style>
+
+        <!-- Google Translate Script -->
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'fr', autoDisplay: false}, 'google_translate_element');
+        }
+        function changeLang(langCode) {
+            var selectField = document.querySelector(".goog-te-combo");
+            if (!selectField) {
+                // If it isn't loaded yet
+                setTimeout(function() { changeLang(langCode); }, 500);
+                return;
+            }
+            selectField.value = langCode;
+            selectField.dispatchEvent(new Event('change'));
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        .goog-te-banner-frame { display: none !important; }
+        iframe.goog-te-banner-frame { display: none !important; }
+        .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        body { top: 0px !important; position: static !important; }
+        html { top: 0px !important; position: static !important; }
+        /* Cacher la translation div */
+        #google_translate_element { display: none !important; }
+        .goog-tooltip { border: none !important; display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-[72px]">
+                <button onclick="window.location.href='index.html'" class="flex items-center gap-3 logo-svg cursor-pointer bg-transparent border-none p-0" aria-label="Dynasoc Accueil">
+                    <img src="images/logo.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain; margin: -50px 0;">
+                </button>
+
+                <nav class="desktop-nav hidden lg:flex items-center gap-1" role="navigation" aria-label="Navigation principale">
+                    <button onclick="window.location.href='index.html'" class="nav-link" data-page="home">Accueil</button>
+                    <button onclick="window.location.href='mission.html'" class="nav-link" data-page="mission">Notre Mission</button>
+                    <button onclick="window.location.href='actions.html'" class="nav-link" data-page="actions">Nos Actions</button>
+                    <button onclick="window.location.href='ressources.html'" class="nav-link" data-page="ressources">Ressources</button>
+                    <button onclick="window.location.href='communaute.html'" class="nav-link" data-page="communaute">Communauté</button>
+                    <button onclick="window.location.href='pme.html'" class="nav-link" data-page="pme">PME</button>
+                    <button onclick="window.location.href='contact.html'" class="nav-link" data-page="contact">Contact</button>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 bg-gray-100 rounded-full p-1">
+                        <button onclick="changeLang('fr')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium bg-white shadow-sm cursor-pointer border-none pb-0">FR</button>
+                        <button onclick="changeLang('nl')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">NL</button>
+                        <button onclick="changeLang('en')" translate="no" class="px-3 py-1 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer border-none pb-0 bg-transparent">EN</button>
+                    </div>
+                    
+                    <button class="mobile-toggle-btn lg:hidden p-2 bg-transparent border-none" id="mobile-toggle" aria-label="Ouvrir le menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-menu" id="mobile-menu" role="dialog">
+            <nav class="flex flex-col gap-4">
+                <button onclick="window.location.href='index.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Accueil</button>
+                <button onclick="window.location.href='mission.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Notre Mission</button>
+                <button onclick="window.location.href='actions.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Nos Actions</button>
+                <button onclick="window.location.href='ressources.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Ressources</button>
+                <button onclick="window.location.href='communaute.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">Communauté</button>
+                <button onclick="window.location.href='pme.html'; closeMobileMenu();" class="py-3 text-lg font-semibold border-b border-gray-100 text-left bg-transparent border-none cursor-pointer">PME</button>
+                <button onclick="window.location.href='contact.html'; closeMobileMenu();" class="py-3 text-lg font-semibold text-left bg-transparent border-none cursor-pointer">Contact</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== PAGE HOME ==================== -->
+    <main style="display: block; opacity: 1; transform: translateY(0);" id="page-confidentialite" class="page-section pt-[72px] active">
+        <section class="py-16 section-gray">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 fade-up">
+                    <span class="inline-block bg-cyan-100 text-cyan-700 px-4 py-1 rounded-full text-sm font-medium mb-4">Légal</span>
+                    <h1 class="text-4xl sm:text-5xl font-bold mb-4">Politique de confidentialité</h1>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Votre vie privée et la sécurité de vos données sont au cœur de nos engagements.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="space-y-12 text-gray-700 leading-relaxed text-base">
+                    
+                    <div class="fade-up">
+                        <p class="text-sm text-gray-500 mb-6">Dernière mise à jour : 10 juin 2026</p>
+                        <p class="mb-4">
+                            La présente politique de confidentialité a pour but de vous informer de manière transparente sur la façon dont Dynasoc ASBL collecte, utilise et protège vos données personnelles lorsque vous naviguez sur notre site internet ou que vous utilisez nos services de contact et d’information.
+                        </p>
+                        <p>
+                            En tant qu'association engagée pour la souveraineté numérique et la conformité au Règlement général sur la protection des données (RGPD), nous accordons une importance fondamentale à la sécurité et à la confidentialité de vos informations.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">1. Responsable du traitement des données</h2>
+                        <p class="mb-4">
+                            Le responsable du traitement des données personnelles collectées sur ce site internet est :
+                        </p>
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-1">
+                            <p class="font-bold text-gray-900 text-lg">Dynasoc ASBL</p>
+                            <p>Avenue Des Arts 12</p>
+                            <p>1210 Saint-Josse</p>
+                            <p>Belgique</p>
+                            <p class="pt-3 text-sm text-gray-500">
+                                Numéro d'entreprise / TVA : BE1038.586.522<br>
+                                Adresse email : <a href="mailto:contact@dynasoc.be" class="text-cyan-600 hover:underline">contact@dynasoc.be</a><br>
+                                Téléphone : <a href="tel:+32474034320" class="text-cyan-600 hover:underline">+32 474 03 43 20</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">2. Données collectées et finalités du traitement</h2>
+                        <p class="mb-6">
+                            Nous limitons la collecte des données personnelles au strict nécessaire (minimisation des données) et traitons ces informations pour des finalités bien définies.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Formulaire de contact</h3>
+                                <p class="mb-2">Lorsque vous soumettez une demande via notre formulaire de contact, nous collectons les données suivantes :</p>
+                                <ul class="list-disc pl-6 space-y-1 mb-3">
+                                    <li>Votre nom complet</li>
+                                    <li>Votre adresse email</li>
+                                    <li>Le type de votre organisation (ASBL/ONG, PME/Entreprise, Pouvoir public, Autre)</li>
+                                    <li>Le contenu de votre message</li>
+                                </ul>
+                                <p class="text-sm">
+                                    <strong>Finalité :</strong> Ces données sont uniquement utilisées pour traiter votre demande, répondre à vos questions et assurer le suivi de nos échanges.<br>
+                                    <strong>Base légale :</strong> Le traitement est fondé sur l'exécution de mesures précontractuelles ou contractuelles (si vous sollicitez nos services) ainsi que sur notre intérêt légitime à répondre aux demandes reçues.
+                                </p>
+                            </div>
+
+                            <div class="pt-6 border-t border-gray-100">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Inscription à la newsletter</h3>
+                                <p class="mb-2">Lorsque vous vous inscrivez à notre newsletter via le formulaire présent sur le site, nous collectons :</p>
+                                <ul class="list-disc pl-6 space-y-1 mb-3">
+                                    <li>Votre adresse email</li>
+                                </ul>
+                                <p class="text-sm">
+                                    <strong>Finalité :</strong> Cette donnée nous permet de vous envoyer nos actualités, publications et invitations aux événements de l'association.<br>
+                                    <strong>Base légale :</strong> Ce traitement repose exclusivement sur votre consentement, que vous pouvez retirer à tout moment en utilisant le lien de désinscription présent dans chaque email reçu.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">3. Durée de conservation des données</h2>
+                        <p class="mb-4">
+                            Vos données personnelles sont conservées uniquement pendant la durée nécessaire à la réalisation des finalités pour lesquelles elles ont été collectées.
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Données du formulaire de contact :</strong> Conservées pendant la durée nécessaire au traitement et à la résolution de votre demande, puis archivées pour une durée maximale de 2 ans à compter du dernier contact, sauf si une relation contractuelle s'établit entre nous.</li>
+                            <li><strong>Données de la newsletter :</strong> Conservées tant que vous ne retirez pas votre consentement. Dès votre désinscription, votre adresse email est définitivement retirée de notre liste de diffusion.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">4. Destinataires et transfert des données</h2>
+                        <p class="mb-4">
+                            Les données personnelles collectées sont destinées exclusivement à l'usage interne de Dynasoc ASBL. Elles ne sont en aucun cas vendues, louées ou transmises à des tiers à des fins commerciales.
+                        </p>
+                        <p>
+                            Conformément à nos engagements en faveur de la souveraineté numérique, l’ensemble de nos serveurs et outils d’hébergement sont situés localement en Belgique ou au sein de l’Union européenne, garantissant ainsi que vos données ne sont pas transférées vers des pays tiers ne présentant pas un niveau de protection adéquat.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">5. Cookies et technologies de suivi</h2>
+                        <p class="mb-4">
+                            Notre site internet est conçu dans le respect de votre vie privée.
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Nous n’utilisons pas de cookies publicitaires, de ciblage ou de suivi comportemental tiers.</li>
+                            <li>Un cookie technique temporaire lié à l'outil de traduction (Google Translate) peut être déposé sur votre navigateur si vous choisissez de changer la langue d'affichage du site (FR, NL, EN). Ce cookie sert uniquement à mémoriser votre préférence linguistique durant votre navigation.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-8 fade-up">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" style="font-family: 'Space Grotesk', sans-serif;">6. Vos droits sous le RGPD</h2>
+                        <p class="mb-4">
+                            En tant que résident européen, vous disposez de droits spécifiques concernant vos données personnelles. Vous pouvez exercer ces droits à tout moment en nous contactant par email à l’adresse <a href="mailto:contact@dynasoc.be" class="text-cyan-600 hover:underline">contact@dynasoc.be</a> :
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2 mb-6">
+                            <li><strong>Droit d'accès :</strong> Obtenir la confirmation que vos données sont traitées et en recevoir une copie.</li>
+                            <li><strong>Droit de rectification :</strong> Demander la correction de données inexactes ou incomplètes.</li>
+                            <li><strong>Droit à l'effacement (« droit à l'oubli ») :</strong> Demander la suppression de vos données personnelles sous certaines conditions.</li>
+                            <li><strong>Droit à la limitation du traitement :</strong> Demander de geler temporairement l'utilisation de vos données dans des cas précis.</li>
+                            <li><strong>Droit d'opposition :</strong> Vous opposer à tout moment au traitement de vos données pour des motifs liés à votre situation particulière.</li>
+                            <li><strong>Droit à la portabilité :</strong> Demander le transfert de vos données dans un format structuré et lisible par machine.</li>
+                        </ul>
+                        <p class="mb-4">
+                            Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous avez le droit d'introduire une réclamation auprès de l'autorité de contrôle belge :
+                        </p>
+                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <p class="font-bold text-gray-900">Autorité de protection des données (APD)</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Rue de la Presse 35, 1000 Bruxelles<br>
+                                Email : <a href="mailto:contact@apd-gba.be" class="text-cyan-600 hover:underline">contact@apd-gba.be</a><br>
+                                Site web : <a href="https://www.autoriteprotectiondonnees.be" target="_blank" rel="noopener noreferrer" class="text-cyan-600 hover:underline">www.autoriteprotectiondonnees.be</a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (visible on all pages) -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <button onclick="window.location.href='index.html'" class="flex items-center gap-3 mb-6 bg-transparent border-none p-0 cursor-pointer" aria-label="Dynasoc Accueil">
+                        <img src="images/Logo_blanc-Photoroom.png" alt="Dynasoc Logo" style="height: 155px; width: auto; object-fit: contain;">
+                    </button>
+                    <p class="text-gray-300 mb-6 text-base">ASBL bruxelloise de plaidoyer pour la souveraineté numérique.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Navigation</h4>
+                    <ul class="space-y-3">
+                        <li><button onclick="window.location.href='index.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Accueil</button></li>
+                        <li><button onclick="window.location.href='mission.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Notre Mission</button></li>
+                        <li><button onclick="window.location.href='actions.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Nos Actions</button></li>
+                        <li><button onclick="window.location.href='ressources.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Ressources</button></li>
+                        <li><button onclick="window.location.href='communaute.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">Communauté</button></li>
+                        <li><button onclick="window.location.href='pme.html'" class="text-gray-300 hover:text-cyan-400 transition-colors bg-transparent border-none cursor-pointer p-0 font-inherit text-left text-base">PME</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Contact</h4>
+                    <ul class="space-y-3 text-base text-gray-300">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Avenue Des Arts 12,<br>1210 Saint-Josse</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            <a href="tel:+32474034320" class="hover:text-cyan-400 transition-colors font-medium text-white">+32 474 03 43 20</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <a href="mailto:contact@dynasoc.be" class="hover:text-cyan-400 transition-colors font-medium text-white">contact@dynasoc.be</a>
+                        </li>
+                        <li class="text-sm text-gray-500 pt-2 border-t border-gray-800">
+                            TVA : BE1038.586.522
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Newsletter</h4>
+                    <p class="text-gray-300 mb-4 text-base">Recevez nos actualités et invitations.</p>
+                    <form action="https://api.web3forms.com/submit" method="POST" onsubmit="event.preventDefault(); handleNewsletterSubmit(this);" class="flex gap-2 mb-6">
+                        <input type="hidden" name="access_key" value="ca368841-3261-41dc-8d98-edfd1d2c9edc">
+                        <input type="hidden" name="subject" value="Nouvelle inscription Newsletter - Dynasoc">
+                        <input type="email" name="email" placeholder="Votre email" required class="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm">
+                        <button type="submit" class="px-4 py-2 bg-cyan-500 rounded-lg hover:bg-cyan-600 transition-colors border-none cursor-pointer text-white" aria-label="S'inscrire">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                    
+                    <h4 class="font-bold mb-3 text-lg" style="font-family: 'Space Grotesk', sans-serif;">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="confidentialite.html" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Confidentialité</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Statuts</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors text-base">Nous soutenir</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">&copy; 2026 Dynasoc ASBL — Pour la souveraineté numérique.</p>
+                <p class="text-gray-500 text-sm">Fait avec passion à Bruxelles</p>
+            </div>
+        </div>
+        <script>
+        function handleNewsletterSubmit(form) {
+            const btn = form.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(new FormData(form)))
+            })
+            .then(async (response) => {
+                if (response.status === 200) {
+                    alert('Inscription confirmée !');
+                    form.reset();
+                } else {
+                    const json = await response.json();
+                    alert(json.message || "Une erreur s'est produite.");
+                }
+            })
+            .catch(() => {
+                alert("Une erreur s'est produite lors de l'inscription.");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            });
+        }
+        </script>
+    </footer>
+
+    <script>
+        // Initialize variables first
+        const header = document.getElementById('header');
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const canvas = document.getElementById('hero-canvas');
+        
+        let ctx = null;
+        let nodes = [];
+        let animationId = null;
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Page navigation system
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show target page
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Trigger animations on new page
+            setTimeout(() => {
+                targetPage.querySelectorAll('.fade-up').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+
+            // Restart canvas if on home page
+            if (pageId === 'home' && canvas) {
+                initCanvas();
+            } else if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function closeMobileMenu() {
+            if (mobileMenu) mobileMenu.classList.remove('open');
+            if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        // Mobile menu toggle
+        if (mobileToggle && mobileMenu) {
+            mobileToggle.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.toggle('open');
+                mobileToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (header) header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Accordion functionality
+        document.querySelectorAll('[data-accordion]').forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    document.querySelectorAll('[data-accordion].active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                        activeItem.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                    });
+                    if (!isActive) {
+                        item.classList.add('active');
+                        header.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.dataset.target) || 0;
+            const duration = 2000;
+            const start = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.round(target * easeOut);
+                if (progress < 1) requestAnimationFrame(update);
+                else element.textContent = target;
+            }
+            requestAnimationFrame(update);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number[data-target]').forEach(el => statsObserver.observe(el));
+
+        // Canvas animation
+        function initCanvas() {
+            if (!canvas) return;
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const colors = [
+                { r: 6, g: 182, b: 212, hex: '#06B6D4' },
+                { r: 0, g: 102, b: 255, hex: '#0066FF' },
+                { r: 16, g: 185, b: 129, hex: '#10B981' },
+                { r: 139, g: 92, b: 246, hex: '#8B5CF6' },
+                { r: 34, g: 211, b: 238, hex: '#22D3EE' },
+                { r: 59, g: 130, b: 246, hex: '#3B82F6' }
+            ];
+
+            let localMouseX = -1000;
+            let localMouseY = -1000;
+            let localMouseActive = false;
+
+            function resize() {
+                canvas.width = canvas.offsetWidth || 800;
+                canvas.height = canvas.offsetHeight || 600;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    drawStaticBackground();
+                } else {
+                    initNodes();
+                }
+            }
+
+            function drawStaticBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                grad.addColorStop(0, 'rgba(6, 182, 212, 0.06)');
+                grad.addColorStop(0.5, 'rgba(0, 102, 255, 0.04)');
+                grad.addColorStop(1, 'rgba(139, 92, 246, 0.03)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            function initNodes() {
+                nodes = [];
+                const count = 120; // Between 100 and 150 particles
+                for (let i = 0; i < count; i++) {
+                    const rand = Math.random();
+                    let baseRadius;
+                    if (rand < 0.65) {
+                        baseRadius = Math.random() * 2.5 + 1; // 1 to 3.5px (65%)
+                    } else if (rand < 0.90) {
+                        baseRadius = Math.random() * 6 + 3; // 3 to 9px (25%)
+                    } else {
+                        baseRadius = Math.random() * 12 + 6; // 6 to 18px (10%)
+                    }
+
+                    const colorObj = colors[Math.floor(Math.random() * colors.length)];
+
+                    nodes.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() * 0.24 - 0.12),
+                        vy: (Math.random() * 0.24 - 0.12),
+                        baseRadius: baseRadius,
+                        radius: baseRadius,
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        pulseSpeed: Math.random() * 0.007 + 0.003,
+                        glowPhase: Math.random() * Math.PI * 2,
+                        glowSpeed: Math.random() * 0.01 + 0.005,
+                        color: colorObj
+                    });
+                }
+            }
+
+            function drawNode(node) {
+                if (!ctx) return;
+
+                const x = node.x;
+                const y = node.y;
+                const r = Math.max(0.5, node.radius);
+
+                if (node.baseRadius > 3.5) {
+                    const glowOpacity = 0.20 + 0.15 * Math.sin(node.glowPhase);
+                    const glowRadius = r * 4;
+
+                    const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
+                    glowGrad.addColorStop(0, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, ${glowOpacity})`);
+                    glowGrad.addColorStop(1, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0)`);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, glowRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = glowGrad;
+                    ctx.fill();
+                }
+
+                const grad = ctx.createRadialGradient(x - r * 0.2, y - r * 0.2, 0, x, y, r);
+                grad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                grad.addColorStop(0.3, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0.7)`);
+                grad.addColorStop(1, `rgba(${node.color.r}, ${node.color.g}, ${node.color.b}, 0)`);
+
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+            }
+
+            function drawConnections() {
+                if (!ctx) return;
+                const maxDist = 160;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const p1 = nodes[i];
+                        const p2 = nodes[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDist) {
+                            const alpha = (1 - dist / maxDist) * 0.18;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+                            grad.addColorStop(0, `rgba(${p1.color.r}, ${p1.color.g}, ${p1.color.b}, ${alpha})`);
+                            grad.addColorStop(1, `rgba(${p2.color.r}, ${p2.color.g}, ${p2.color.b}, ${alpha})`);
+                            ctx.strokeStyle = grad;
+                            ctx.lineWidth = 0.6;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function updateNodes() {
+                nodes.forEach(node => {
+                    node.pulsePhase += node.pulseSpeed;
+                    node.radius = node.baseRadius * (1 + 0.25 * Math.sin(node.pulsePhase));
+
+                    if (node.baseRadius > 3.5) {
+                        node.glowPhase += node.glowSpeed;
+                    }
+
+                    if (localMouseActive) {
+                        const dx = localMouseX - node.x;
+                        const dy = localMouseY - node.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 280 && dist > 0) {
+                            const pull = (1 - dist / 280) * 0.35 + 0.05;
+                            node.vx += (dx / dist) * pull;
+                            node.vy += (dy / dist) * pull;
+                            
+                            const damping = 0.88 + 0.08 * (dist / 280);
+                            node.vx *= damping;
+                            node.vy *= damping;
+                        }
+                    }
+
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    node.vx *= 0.992;
+                    node.vy *= 0.992;
+
+                    const r = node.radius;
+                    if (node.x - r < 0) {
+                        node.x = r;
+                        node.vx = -node.vx * 0.6;
+                    } else if (node.x + r > canvas.width) {
+                        node.x = canvas.width - r;
+                        node.vx = -node.vx * 0.6;
+                    }
+
+                    if (node.y - r < 0) {
+                        node.y = r;
+                        node.vy = -node.vy * 0.6;
+                    } else if (node.y + r > canvas.height) {
+                        node.y = canvas.height - r;
+                        node.vy = -node.vy * 0.6;
+                    }
+                });
+            }
+
+            function animate() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    drawStaticBackground();
+                    return;
+                }
+                if (!ctx || !canvas) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawConnections();
+                nodes.forEach(drawNode);
+                updateNodes();
+                animationId = requestAnimationFrame(animate);
+            }
+
+            const parent = canvas.parentElement || canvas;
+            parent.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                localMouseX = e.clientX - rect.left;
+                localMouseY = e.clientY - rect.top;
+                localMouseActive = true;
+            });
+
+            parent.addEventListener('mouseleave', () => {
+                localMouseActive = false;
+            });
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show initial animations
+            document.querySelectorAll('#page-home .fade-up').forEach(el => {
+                setTimeout(() => el.classList.add('visible'), 100);
+            });
+            initCanvas();
+        });
+
+        // Cleanup
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && animationId) cancelAnimationFrame(animationId);
+            else if (!document.hidden && document.getElementById('page-home')?.classList.contains('active')) initCanvas();
+        });
+    </script>
+</body>
+</html>
